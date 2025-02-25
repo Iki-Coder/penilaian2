@@ -46,10 +46,9 @@ include '../config/database.php';
             <th>Nama Siswa</th>
             <th>Mata Pelajaran</th>
             <th>Nilai</th>
-            <th>Aksi</th>
         </tr>
         <?php
-        $query = "SELECT nilai.id, siswa.nama, nilai.mata_pelajaran, nilai.nilai 
+        $query = "SELECT siswa.nama, nilai.mata_pelajaran, nilai.nilai 
                   FROM nilai JOIN siswa ON nilai.siswa_id = siswa.id";
         $result = $conn->query($query);
         while ($row = $result->fetch_assoc()) {
@@ -57,13 +56,9 @@ include '../config/database.php';
                     <td>{$row['nama']}</td>
                     <td>{$row['mata_pelajaran']}</td>
                     <td>{$row['nilai']}</td>
-                    <td>
-                        <a href='../controllers/nilai.php?hapus={$row['id']}'>Hapus</a>
-                    </td>
                   </tr>";
         }
         ?>
     </table>
 </body>
 </html>
-

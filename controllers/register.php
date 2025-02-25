@@ -7,7 +7,6 @@ if (isset($_POST['register'])) {
     $password = $_POST['password'];
     $role = $_POST['role'];
 
-    // Cek apakah username sudah ada
     $cek_user = $conn->prepare("SELECT id FROM users WHERE username = ?");
     $cek_user->bind_param("s", $username);
     $cek_user->execute();
@@ -19,10 +18,8 @@ if (isset($_POST['register'])) {
     }
     $cek_user->close();
 
-    // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Simpan ke database
     $stmt = $conn->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $username, $hashed_password, $role);
     if ($stmt->execute()) {

@@ -25,8 +25,8 @@ if (isset($_SESSION['role'])) {
 
         <label>Password:</label>
         <input type="password" name="password" required><br>
-        <button type="submit" name="login">Login</button><br>
 
+        <button type="submit" name="login">Login</button><br>
         <p>Belum punya akun? <a href="register.php">Daftar di sini</a></p>
 
     </form>
