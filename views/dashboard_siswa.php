@@ -28,6 +28,8 @@ include '../config/database.php';
         <?php
         $user_id = $_SESSION['user_id'];
         $query = "SELECT nilai.mata_pelajaran, nilai.nilai 
+                  FROM nilai 
+                  JOIN siswa ON nilai.siswa_id = siswa.id 
                   WHERE siswa.id = '$user_id'";
         $result = $conn->query($query);
         while ($row = $result->fetch_assoc()) {
