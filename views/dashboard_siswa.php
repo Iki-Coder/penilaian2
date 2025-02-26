@@ -1,11 +1,19 @@
 <?php
 session_start();
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'siswa') {
+include '../config/database.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'siswa') {
     header("Location: login.php");
     exit;
 }
 
-include '../config/database.php';
+$siswa_id = $_SESSION['user_id'];
+
+$query = "SELECT mata_pelajaran, nilai_harian, uh_1, uh_2, nilai_akhir_semester, rata_rata FROM nilai WHERE siswa_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $siswa_id);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -16,29 +24,32 @@ include '../config/database.php';
     <title>Dashboard Siswa</title>
 </head>
 <body>
-    <h2>Dashboard Siswa</h2>
-    <a href="../controllers/logout.php">Logout</a>
+    <h2>Selamat datang, Siswa!</h2>
 
-    <h3>Daftar Nilai</h3>
+    <p><a href="input_nilai.php">Masukkan Nilai</a></p> 
+
+    <h3>Nilai Kamu</h3>
     <table border="1">
         <tr>
             <th>Mata Pelajaran</th>
-            <th>Nilai</th>
+            <th>Nilai Harian</th>
+            <th>UH 1</th>
+            <th>UH 2</th>
+            <th>Nilai Akhir Semester</th>
+            <th>Rata-rata</th>
         </tr>
-        <?php
-        $user_id = $_SESSION['user_id'];
-        $query = "SELECT nilai.mata_pelajaran, nilai.nilai 
-                  FROM nilai 
-                  JOIN siswa ON nilai.siswa_id = siswa.id 
-                  WHERE siswa.id = '$user_id'";
-        $result = $conn->query($query);
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>
-                    <td>{$row['mata_pelajaran']}</td>
-                    <td>{$row['nilai']}</td>
-                  </tr>";
-        }
-        ?>
+        <?php while ($row = $result->fetch_assoc()) { ?>
+        <tr>
+            <td><?php echo $row['mata_pelajaran']; ?></td>
+            <td><?php echo $row['nilai_harian']; ?></td>
+            <td><?php echo $row['uh_1']; ?></td>
+            <td><?php echo $row['uh_2']; ?></td>
+            <td><?php echo $row['nilai_akhir_semester']; ?></td>
+            <td><?php echo isset($row['rata_rata']) ? $row['rata_rata'] : 'Belum Ada'; ?></td>
+        </tr>
+        <?php } ?>
     </table>
+
+    <p><a href="../controllers/logout.php">Logout</a></p>
 </body>
 </html>
