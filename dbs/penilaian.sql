@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Waktu pembuatan: 26 Feb 2025 pada 09.18
+-- Waktu pembuatan: 11 Mar 2025 pada 05.16
 -- Versi server: 10.4.28-MariaDB
 -- Versi PHP: 8.0.28
 
@@ -30,21 +30,21 @@ SET time_zone = "+00:00";
 CREATE TABLE `nilai` (
   `id` int(11) NOT NULL,
   `siswa_id` int(11) NOT NULL,
-  `mata_pelajaran` varchar(25) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `nilai_harian` int(11) NOT NULL,
   `uh_1` int(11) NOT NULL,
   `uh_2` int(11) NOT NULL,
   `nilai_akhir_semester` int(11) NOT NULL,
-  `rata_rata` float DEFAULT 0
+  `rata_rata` float DEFAULT 0,
+  `mapel` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `nilai`
 --
 
-INSERT INTO `nilai` (`id`, `siswa_id`, `mata_pelajaran`, `created_at`, `nilai_harian`, `uh_1`, `uh_2`, `nilai_akhir_semester`, `rata_rata`) VALUES
-(3, 6, 'PPS', '2025-02-26 07:40:53', 96, 78, 98, 67, 78.3);
+INSERT INTO `nilai` (`id`, `siswa_id`, `created_at`, `nilai_harian`, `uh_1`, `uh_2`, `nilai_akhir_semester`, `rata_rata`, `mapel`) VALUES
+(10, 6, '2025-03-11 03:47:45', 100, 100, 80, 90, 91, 'PPS');
 
 -- --------------------------------------------------------
 
@@ -77,8 +77,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
 (6, 'Rizki', '$2y$10$7w5wdwS78bdoVW4tjM3bkOAwlDZCseNxWMa8HiMhc4h9Hq0dT16ci', 'siswa'),
-(7, 'Siti', '$2y$10$JbWu415CJUTJOdHVPOG8I.aTH5Pq.kKyGZ7N0dh1ZLC7Sdz1cgXdS', 'guru'),
-(8, 'Lala', '$2y$10$c7pBv.K3EXfsABAP79k8N.9K2SmoAS3xENgwtN9tccfYwQte.Y1O6', 'siswa');
+(12, 'Danang', '$2y$10$1GszBPQl5ex.NvWKf6a7f.W8p.DR4QQQWbK8DK6RM52kKbwYHlo.i', 'guru'),
+(14, 'Dimas', '$2y$10$2FZP8iu8ZDP4AnlyMrNIF.TW3.pHUV5vLGCdTzvB1Q368BbCyoEvu', 'siswa');
 
 --
 -- Indexes for dumped tables
@@ -113,7 +113,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `nilai`
 --
 ALTER TABLE `nilai`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT untuk tabel `siswa`
@@ -125,7 +125,7 @@ ALTER TABLE `siswa`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
