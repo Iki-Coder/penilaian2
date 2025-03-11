@@ -2,33 +2,40 @@
 session_start();
 include '../config/database.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'siswa') {
-    header("Location: login.php");
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'guru') {
+    header("Location: ../login.php");
     exit;
 }
 
-$siswa_id = $_SESSION['user_id'];
+$siswaQuery = "SELECT id, username FROM users WHERE role = 'siswa'";
+$siswaResult = $conn->query($siswaQuery);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $siswa_id = $_POST['siswa_id'];
     $mapel = $_POST['mapel'];
     $nilai_harian = $_POST['nilai_harian'];
     $uh_1 = $_POST['uh_1'];
     $uh_2 = $_POST['uh_2'];
     $nilai_akhir_semester = $_POST['nilai_akhir_semester'];
 
-    $rata_rata = ($nilai_harian * 0.1) + ($uh_1 * 0.2) + ($uh_2 * 0.2) + ($nilai_akhir_semester * 0.5);
+    $bobot_harian = $nilai_harian * 0.1;
+    $bobot_uh1 = $uh_1 * 0.2;
+    $bobot_uh2 = $uh_2 * 0.2;
+    $bobot_nilai_akhir = $nilai_akhir_semester * 0.5;
 
-    $stmt = $conn->prepare("INSERT INTO nilai (siswa_id, mata_pelajaran, nilai_harian, uh_1, uh_2, nilai_akhir_semester, rata_rata) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("issdddd", $siswa_id, $mapel, $nilai_harian, $uh_1, $uh_2, $nilai_akhir_semester, $rata_rata);
+    $rata_rata = $bobot_harian + $bobot_uh1 + $bobot_uh2 + $bobot_nilai_akhir;
+
+    $query = "INSERT INTO nilai (siswa_id, mapel, nilai_harian, uh_1, uh_2, nilai_akhir_semester, rata_rata) 
+              VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("isiiidd", $siswa_id, $mapel, $nilai_harian, $uh_1, $uh_2, $nilai_akhir_semester, $rata_rata);
 
     if ($stmt->execute()) {
-        echo "Nilai berhasil disimpan!";
-        header("Location: dashboard_siswa.php");
+        header("Location: ../views/dashboard_guru.php?pesan=sukses");
         exit;
     } else {
-        echo "Gagal menyimpan nilai!";
+        die("Gagal menyimpan nilai! Error: " . $stmt->error);
     }
-    $stmt->close();
 }
 ?>
 
@@ -40,8 +47,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Input Nilai</title>
 </head>
 <body>
-    <h2>Input Nilai</h2>
-    <form action="" method="POST">
+    <h2>Input Nilai Siswa</h2>
+    <form method="POST">
+        <label>Pilih Siswa:</label>
+        <select name="siswa_id" required>
+            <?php while ($siswa = $siswaResult->fetch_assoc()) { ?>
+                <option value="<?php echo $siswa['id']; ?>"><?php echo $siswa['username']; ?></option>
+            <?php } ?>
+        </select><br>
+
         <label>Mata Pelajaran:</label>
         <input type="text" name="mapel" required><br>
 
@@ -60,6 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="submit">Simpan Nilai</button>
     </form>
 
-    <a href="dashboard_siswa.php">Kembali ke Dashboard</a>
+    <p><a href="dashboard_guru.php">Kembali ke Dashboard Guru</a></p>
 </body>
 </html>
