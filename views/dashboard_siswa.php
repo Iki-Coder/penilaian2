@@ -2,7 +2,6 @@
 session_start();
 include '../config/database.php';
 
-// Cek apakah user login sebagai siswa
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'siswa') {
     header("Location: login.php");
     exit;
@@ -10,7 +9,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'siswa') {
 
 $siswa_id = $_SESSION['user_id'];
 
-// Ambil nilai siswa dari database
 $query = "SELECT mapel, nilai_harian, uh_1, uh_2, nilai_akhir_semester, rata_rata FROM nilai WHERE siswa_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $siswa_id);
